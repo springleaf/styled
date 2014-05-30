@@ -1,0 +1,5 @@
+.container
+  h2 Select a theme
+  ul.nav.nav-pills.nav-stacked
+    - available_layouts.each do |layout|
+      li= link_to layout.capitalize, guide_path(layout)

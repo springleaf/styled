@@ -1,0 +1,39 @@
+/*
+ *= require prettify/tomorrow_dark
+ *= require_self
+ */
+
+.styled-title {
+  font: bold 31.5px/40px helvetica, arial, sans-serif;
+  margin: 10px 0;
+}
+
+.styled-description {
+}
+
+.styled-example {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 16px 0;
+  padding: 39px 19px 14px;
+  position: relative;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+
+  &:after {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 4px 0;
+    color: #9da0a4;
+    content: "Example";
+    font-size: 12px;
+    font-weight: bold;
+    left: -1px;
+    padding: 3px 7px;
+    position: absolute;
+    top: -1px;
+    -webkit-border-radius: 4px 0 4px 0;
+    -moz-border-radius: 4px 0 4px 0;
+  }
+}
