@@ -1,0 +1,72 @@
++function ($) {
+  'use strict';
+
+  var Typed = function(element) {
+    this.$element = $(element)
+    this.$target  = $(this.$element.data('target'))
+
+    if (!this.$target.length) {
+      this.$target  = this.$element.parent().find('h1, h2, h3, h4, h5, h6, p').first()
+    }
+
+    // this.$element = $(element)
+
+    this.$element.text(this.getContent(this.$target))
+  }
+
+  Typed.prototype.getContent = function (element) {
+    var weight = element.css('font-weight')
+    var size   = element.css('font-size')
+    var height = element.css('line-height')
+
+    switch(weight) {
+      case '100':
+        weight = 'Extra Light'
+        break;
+      case '200':
+        weight = 'Light'
+        break;
+      case '300':
+        weight = 'Book'
+        break;
+      case '400':
+        weight = 'Regular'
+        break;
+      case '500':
+        weight = 'Medium'
+        break;
+      case '600':
+        weight = 'Semibold'
+        break;
+      case '700':
+        weight = 'Bold'
+        break;
+      case '800':
+        weight = 'Black'
+        break;
+      case '900':
+        weight = 'Extra Black'
+        break;
+    }
+
+    return weight + ' ' + size + '/' + height
+  }
+
+  var old = $.fn.typed
+
+  $.fn.typed = function () {
+    return this.each(function() {
+      var $this = $(this)
+      var data  = $this.data('styled.typed')
+
+      if (!data) $this.data('styled.typed', (data = new Typed(this)))
+    })
+  }
+
+  $.fn.typed.Constructor = Typed
+
+  $.fn.typed.noConflict = function () {
+    $.fn.typed = old
+    return this
+  }
+}(jQuery);

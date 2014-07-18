@@ -3,3 +3,8 @@
   ul.nav.nav-pills.nav-stacked
     - available_layouts.each do |layout|
       li= link_to layout.capitalize, guide_path(layout)
+
+  h2 Bootstrap Docs
+  ul.nav.nav-pills.nav-stacked
+    - available_layouts.each do |layout|
+      li= link_to layout.capitalize, doc_path(path: "home", theme: layout)

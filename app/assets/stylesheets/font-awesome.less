@@ -1,0 +1,33 @@
+@import "font-awesome/variables";
+@import "font-awesome/mixins";
+@import "font-awesome/core";
+@import "font-awesome/larger";
+@import "font-awesome/fixed-width";
+@import "font-awesome/list";
+@import "font-awesome/bordered-pulled";
+@import "font-awesome/spinning";
+@import "font-awesome/rotated-flipped";
+@import "font-awesome/stacked";
+@import "font-awesome/icons";
+
+// Replaces @import "font-awesome/path";
+
+@fa-eot:       asset-url("font-awesome/fontawesome-webfont.eot");
+@fa-eot-iefix: asset-url("font-awesome/fontawesome-webfont.eot?#iefix");
+@fa-woff:      asset-url("font-awesome/fontawesome-webfont.woff");
+@fa-ttf:       asset-url("font-awesome/fontawesome-webfont.ttf");
+@fa-svg:       asset-url("font-awesome/fontawesome-webfont.svg#fontawesomeregular");
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: @fa-eot;
+  src: @fa-eot-iefix format('embedded-opentype'),
+       @fa-woff      format('woff'),
+       @fa-ttf       format('truetype'),
+       @fa-svg       format('svg');
+
+  // src: url('@{fa-font-path}/FontAwesome.otf') format('opentype'); // used when developing fonts
+
+  font-weight: normal;
+  font-style:  normal;
+}

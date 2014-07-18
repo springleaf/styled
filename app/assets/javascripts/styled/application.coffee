@@ -5,3 +5,6 @@
 
 $ ->
   prettyPrint()
+
+$ ->
+  $('.type-info').typed()

@@ -55,28 +55,25 @@ namespace :bootstrap do
     sh "cp #{tmp}/js/*.js     #{js}"
 
     Dir.chdir tmp do
-
-      files = "docs/*.html docs/_includes/*.html docs/examples/*/index.html"
-
-      sh %q[sed -i '' -e 's|"grunt": "~0.4.2"|"grunt": "0.4.2"|g' package.json]
+      files = "package.json docs/*.html docs/_layouts/*.html docs/_includes/*.html docs/examples/*/index.html"
 
       sh %Q[sed -i '' -f #{dir}/script/sed/bootstrap.clean.sed #{files}]
-      # sh %Q[sed -i '' -e 's|href=".*/dist/css/bootstrap.min.css"|href="//assets/themes/leafy.css?body=1"|g' #{files}]
-      # sh %Q[sed -i '' -e 's|href=".*/dist/js/bootstrap.min.js"|href="//assets/themes/leafy.js?body=1"|g'    #{files}]
-      # sh %Q[sed -i '' -e '/jquery.min.js/d'                                                                 #{files}]
-      # sh %Q[sed -i '' -e '/ads.html/d'                                                                      #{files}]
 
-      # # Fix asset paths in docs
-      # sh %Q[sed -i '' -e 's|href="../assets/|href="/assets/bootstrap/|g' #{files}]
-      # sh %Q[sed -i '' -e 's|src="../assets/|src="/assets/bootstrap/|g'   #{files}]
-      # sh %Q[sed -i '' -e 's|src="assets/|src="/assets/bootstrap/|g'      #{files}]
+      # Remove tracking scripts
+      sh %q[sed -i '' -e '/^<script>/,/^<\/script>/d' docs/_includes/*.html]
 
       sh "npm install"
       sh "grunt"
+
+      sed = "sed -i '' -f #{dir}/script/sed/bootstrap.erbify.sed"
+
+      sh "find ./_gh_pages -type f -name *.html -exec #{sed} '{}' \\;"
+      sh "find ./_gh_pages -type f -name *.html -exec mv '{}' '{}'.erb \\;"
     end
 
     FileUtils.cp_r "#{tmp}/_gh_pages", docs
     FileUtils.mv   "#{docs}/assets", "#{dir}/app/assets/vendor/bootstrap"
+    FileUtils.mv   "#{docs}/examples/screenshots", "#{dir}/app/assets/vendor/bootstrap/img/screenshots"
   end
 
   task :distclean do
