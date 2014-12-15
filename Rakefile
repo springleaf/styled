@@ -3,8 +3,10 @@
 begin
   require 'bundler/setup'
 rescue LoadError
-  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+  puts "You must `gem install bundler` and `bundle install` to run rake tasks"
 end
+
+require "colorize"
 
 require "styled/engine"
 
@@ -30,29 +32,34 @@ namespace :bootstrap do
   tmp   = "tmp/bootstrap"
   dir   = Styled::Engine.root
 
-  fonts = "app/assets/fonts/twitter/bootstrap"
-  css   = "app/assets/stylesheets/twitter/bootstrap"
-  js    = "app/assets/javascripts/twitter/bootstrap"
-  docs  = "app/views/styled/docs"
+  docs  = "app/views/styled/bootstrap"
 
-  tag = "v3.1.1"
+  task :checkout, :tag do |t, args|
+    abort "\nNo tag specified: e.g. rake bootstrap:checkout[v3.3.1]".red unless tag = args[:tag]
 
-  task :update do
     sh "git clone git@github.com:twbs/bootstrap.git #{tmp}" unless File.exist?(tmp)
 
     Dir.chdir tmp do
+      sh "git reset --hard"
       sh "git fetch"
       sh "git checkout tags/#{tag}"
-      sh "git reset --hard"
     end
+
+    puts "\nBootstrap: updated to tags/#{tag}".green
   end
 
-  task :upgrade => [:distclean, :update] do
-    FileUtils.mkdir_p [css, js, fonts]
+  task :install, [:tag] => [:distclean, :checkout] do |t, args|
+    abort "\nNo tag specified: e.g. rake bootstrap:install[v3.3.1]".red unless tag = args[:tag]
 
-    sh "cp #{tmp}/fonts/*     #{fonts}"
-    sh "cp #{tmp}/less/*.less #{css}"
-    sh "cp #{tmp}/js/*.js     #{js}"
+    dist = "app/assets/styled/bootstrap/#{tag}"
+
+    FileUtils.mkdir_p %W[#{dist}/fonts #{dist}/js #{dist}/less]
+
+    sh "cp #{tmp}/fonts/*     #{dist}/fonts"
+    sh "cp #{tmp}/js/*.js     #{dist}/js"
+    sh "cp #{tmp}/less/*.less #{dist}/less"
+
+    sh %Q[echo '@import "bootstrap/#{tag}/less/bootstrap";' > #{dist}.less]
 
     Dir.chdir tmp do
       files = "package.json docs/*.html docs/_layouts/*.html docs/_includes/*.html docs/examples/*/index.html"
@@ -62,6 +69,7 @@ namespace :bootstrap do
       # Remove tracking scripts
       sh %q[sed -i '' -e '/^<script>/,/^<\/script>/d' docs/_includes/*.html]
 
+      sh "rm -rf node_modules"
       sh "npm install"
       sh "grunt"
 
@@ -71,20 +79,28 @@ namespace :bootstrap do
       sh "find ./_gh_pages -type f -name *.html -exec mv '{}' '{}'.erb \\;"
     end
 
-    FileUtils.cp_r "#{tmp}/_gh_pages", docs
-    FileUtils.mv   "#{docs}/assets", "#{dir}/app/assets/vendor/bootstrap"
-    FileUtils.mv   "#{docs}/examples/screenshots", "#{dir}/app/assets/vendor/bootstrap/img/screenshots"
+    FileUtils.mkdir_p "#{dir}/app/assets/vendor/bootstrap/#{tag}"
+    FileUtils.mkdir_p "#{docs}/#{tag}"
+
+    sh "cp -r #{tmp}/_gh_pages/ #{docs}/#{tag}"
+    sh "mv #{docs}/#{tag}/assets               app/assets/vendor/bootstrap/#{tag}"
+    sh "mv #{docs}/#{tag}/examples/screenshots app/assets/vendor/bootstrap/#{tag}/img/"
   end
 
-  task :distclean do
-    sh "rm -rf #{fonts}"
-    sh "rm -rf #{css}"
-    sh "rm -rf #{js}"
-    sh "rm -rf #{docs}"
-    sh "rm -rf #{dir}/app/assets/vendor/bootstrap"
+  task :distclean, :tag do |t, args|
+    abort "\nNo tag specified: e.g. rake bootstrap:distclean[v3.3.1]".red unless tag = args[:tag]
+
+    dist = "app/assets/styled/bootstrap/#{tag}"
+
+    sh "rm -rf #{dist}"
+    sh "rm -rf #{dist}.less"
+    sh "rm -rf #{dist}.coffee"
+
+    sh "rm -rf app/views/styled/bootstrap/#{tag}"
+    sh "rm -rf app/assets/vendor/bootstrap/#{tag}"
   end
 
-  task :clean => :distclean do
+  task :clean do
     sh "rm -rf #{tmp}"
   end
 end
