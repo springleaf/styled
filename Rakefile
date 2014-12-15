@@ -55,9 +55,11 @@ namespace :bootstrap do
 
     FileUtils.mkdir_p %W[#{dist}/fonts #{dist}/js #{dist}/less]
 
-    sh "cp #{tmp}/fonts/*     #{dist}/fonts"
-    sh "cp #{tmp}/js/*.js     #{dist}/js"
-    sh "cp #{tmp}/less/*.less #{dist}/less"
+    sh "cp -r #{tmp}/fonts/ #{dist}/fonts"
+    sh "cp -r #{tmp}/js/    #{dist}/js"
+    sh "cp -r #{tmp}/less/  #{dist}/less"
+
+    sh "rm -rf #{dist}/js/tests"
 
     sh %Q[echo '@import "bootstrap/#{tag}/less/bootstrap";' > #{dist}.less]
 
