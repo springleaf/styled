@@ -114,7 +114,7 @@ namespace :fontawesome do
   fonts = "app/assets/fonts/font-awesome"
   css   = "app/assets/stylesheets/font-awesome"
 
-  tag = "v4.1.0"
+  tag = "v4.3.0"
 
   task :update do
     sh "git clone git@github.com:FortAwesome/Font-Awesome.git #{tmp}" unless File.exist?(tmp)
