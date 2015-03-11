@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files  = s.files.grep(%r{^(test|spec|features)/})
 
-  s.add_dependency "rails"
+  s.add_dependency "rails", ">= 4.1.0"
   s.add_dependency "google-code-prettify-rails"
   s.add_dependency "less-rails"
 end
